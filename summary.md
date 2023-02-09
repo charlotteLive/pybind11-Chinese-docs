@@ -295,7 +295,7 @@ py::enum_<Flags>(m, "Flags", py::arithmetic())
 
 枚举类型的枚举项会被导出到类`__members__`属性中，`name`属性可以返回枚举值的名称的unicode字符串，`str(enum)`也可以做到，但两者的实现目标不同。
 
-### 1.6 接收`*args`和`**kwatgs`参数
+### 1.6 接收`*args`和`**kwargs`参数
 
 Python的函数可以接收任意数量的参数和关键字参数：
 ```python
