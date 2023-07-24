@@ -1,0 +1,673 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Python的C++接口 - pybind11 Chinese docs</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="00.介绍.html">简介</a></li><li class="chapter-item expanded "><a href="01.改动日志.html"><strong aria-hidden="true">1.</strong> 改动日志</a></li><li class="chapter-item expanded "><a href="02.更新指南.html"><strong aria-hidden="true">2.</strong> 更新指南</a></li><li class="chapter-item expanded "><a href="03.安装说明.html"><strong aria-hidden="true">3.</strong> 安装说明</a></li><li class="chapter-item expanded "><a href="04.首次尝试.html"><strong aria-hidden="true">4.</strong> 首次尝试</a></li><li class="chapter-item expanded "><a href="05.面对对象编程.html"><strong aria-hidden="true">5.</strong> 面对对象编程</a></li><li class="chapter-item expanded "><a href="06.构建系统.html"><strong aria-hidden="true">6.</strong> 构建系统</a></li><li class="chapter-item expanded "><a href="07.函数.html"><strong aria-hidden="true">7.</strong> 函数</a></li><li class="chapter-item expanded "><a href="08.类.html"><strong aria-hidden="true">8.</strong> 类</a></li><li class="chapter-item expanded "><a href="09.异常.html"><strong aria-hidden="true">9.</strong> 异常</a></li><li class="chapter-item expanded "><a href="10.智能指针.html"><strong aria-hidden="true">10.</strong> 智能指针</a></li><li class="chapter-item expanded "><a href="11.类型转换.html"><strong aria-hidden="true">11.</strong> 类型转换</a></li><li class="chapter-item expanded "><a href="12.Python的C++接口.html" class="active"><strong aria-hidden="true">12.</strong> Python的C++接口</a></li><li class="chapter-item expanded "><a href="13.内嵌解释器.html"><strong aria-hidden="true">13.</strong> 内嵌解释器</a></li><li class="chapter-item expanded "><a href="14.杂项.html"><strong aria-hidden="true">14.</strong> 杂项</a></li><li class="chapter-item expanded "><a href="15.FAQ.html"><strong aria-hidden="true">15.</strong> FAQ</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">pybind11 Chinese docs</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="12-python-c接口"><a class="header" href="#12-python-c接口">12. Python C++接口</a></h2>
+<p>pybind11通过简单的C++包装公开了Python类型和函数，这使得我们可以方便的在C++中调用Python代码，而无需借助Python C API。</p>
+<h3 id="121-python类型"><a class="header" href="#121-python类型">12.1 Python类型</a></h3>
+<h4 id="1211-可用的封装"><a class="header" href="#1211-可用的封装">12.1.1 可用的封装</a></h4>
+<p>所有主要的Python类型通过简单C++类封装公开出来了，可以当做参数参数来使用。包括： <code>handle</code>, <code>object</code>, <code>bool_</code>, <code>int_</code>, <code>float_</code>, <code>str</code>, <code>bytes</code>, <code>tuple</code>, <code>list</code>, <code>dict</code>, <code>slice</code>, <code>none</code>, <code>capsule</code>, <code>iterable</code>, <code>iterator</code>, <code>function</code>, <code>buffer</code>, <code>array</code>, 和<code>array_t</code>.</p>
+<blockquote>
+<p>Warning: Be sure to review the <a href="https://pybind11.readthedocs.io/en/stable/advanced/pycpp/object.html#pytypes-gotchas">Gotchas</a> before using this heavily in your C++ API.</p>
+</blockquote>
+<h4 id="1212-在c中实例化复合python类型"><a class="header" href="#1212-在c中实例化复合python类型">12.1.2 在C++中实例化复合Python类型</a></h4>
+<p>字典对象可以通过<code>dict</code>构造函数来初始化：</p>
+<pre><code class="language-c++">using namespace pybind11::literals; // to bring in the `_a` literal
+py::dict d(&quot;spam&quot;_a=py::none(), &quot;eggs&quot;_a=42);
+</code></pre>
+<p>tuple对象可以通过<code>py::make_tuple()</code>来构造：</p>
+<pre><code class="language-c++">py::tuple tup = py::make_tuple(42, py::none(), &quot;spam&quot;);
+</code></pre>
+<p>每个元素都会被转换为支持的Python类型，</p>
+<p>simple namespace可以这样实例化：</p>
+<pre><code class="language-c++">using namespace pybind11::literals;  // to bring in the `_a` literal
+py::object SimpleNamespace = py::module_::import(&quot;types&quot;).attr(&quot;SimpleNamespace&quot;);
+py::object ns = SimpleNamespace(&quot;spam&quot;_a=py::none(), &quot;eggs&quot;_a=42);
+</code></pre>
+<p>namespace的属性可以通过<code>py::delattr()</code>，<code>py::getattr()</code>和<code>py::setattr()</code>来修改。Simple namespaces可以作为类实例的轻量级替代。</p>
+<h4 id="1213-相互转换"><a class="header" href="#1213-相互转换">12.1.3 相互转换</a></h4>
+<p>混合编程时，通常需要将任意C++类型转换为Python类型，可以使用<code>py::cast()</code>来实现：</p>
+<pre><code class="language-c++">MyClass *cls = ...;
+py::object obj = py::cast(cls);
+</code></pre>
+<p>反方向可以使用以下语法：</p>
+<pre><code class="language-c++">py::object obj = ...;
+MyClass *cls = obj.cast&lt;MyClass *&gt;();
+</code></pre>
+<p>转换失败时，两个方向都会抛出<code>cast_error</code>异常。</p>
+<h4 id="1214-在c中访问python库"><a class="header" href="#1214-在c中访问python库">12.1.4 在C++中访问Python库</a></h4>
+<p>在C++中也可以导入Python标准库或Python环境（sys.path)可找到的库的对象。示例如下：</p>
+<pre><code class="language-c++">// Equivalent to &quot;from decimal import Decimal&quot;
+py::object Decimal = py::module_::import(&quot;decimal&quot;).attr(&quot;Decimal&quot;);
+
+// Try to import scipy
+py::object scipy = py::module_::import(&quot;scipy&quot;);
+return scipy.attr(&quot;__version__&quot;);
+</code></pre>
+<h4 id="1215-调用python函数"><a class="header" href="#1215-调用python函数">12.1.5 调用Python函数</a></h4>
+<p>通过<code>operator()</code>可以调用Python类、函数和方法。</p>
+<pre><code class="language-c++">// Construct a Python object of class Decimal
+py::object pi = Decimal(&quot;3.14159&quot;);
+
+// Use Python to make our directories
+py::object os = py::module_::import(&quot;os&quot;);
+py::object makedirs = os.attr(&quot;makedirs&quot;);
+makedirs(&quot;/tmp/path/to/somewhere&quot;);
+</code></pre>
+<p>One can convert the result obtained from Python to a pure C++ version if a <code>py::class_</code> or type conversion is defined.</p>
+<pre><code class="language-c++">py::function f = &lt;...&gt;;
+py::object result_py = f(1234, &quot;hello&quot;, some_instance);
+MyClass &amp;result = result_py.cast&lt;MyClass&gt;();
+</code></pre>
+<h4 id="1216-调用python对象的方法"><a class="header" href="#1216-调用python对象的方法">12.1.6 调用Python对象的方法</a></h4>
+<p>使用<code>.attr</code>可以调用对象的Python方法。</p>
+<pre><code class="language-c++">// Calculate e^π in decimal
+py::object exp_pi = pi.attr(&quot;exp&quot;)();
+py::print(py::str(exp_pi));
+</code></pre>
+<p>In the example above <code>pi.attr(&quot;exp&quot;)</code> is a <em>bound method</em>: it will always call the method for that same instance of the class. Alternately one can create an <em>unbound method</em> via the Python class (instead of instance) and pass the <code>self</code> object explicitly, followed by other arguments.</p>
+<pre><code class="language-c++">py::object decimal_exp = Decimal.attr(&quot;exp&quot;);
+
+// Compute the e^n for n=0..4
+for (int n = 0; n &lt; 5; n++) {
+    py::print(decimal_exp(Decimal(n));
+}
+</code></pre>
+<h4 id="1217-关键字参数"><a class="header" href="#1217-关键字参数">12.1.7 关键字参数</a></h4>
+<p>支持关键字参数，Python语法示例如下：</p>
+<pre><code class="language-python">def f(number, say, to):
+    ...  # function code
+
+
+f(1234, say=&quot;hello&quot;, to=some_instance)  # keyword call in Python
+</code></pre>
+<p>C++中则可以这样写：</p>
+<pre><code class="language-c++">using namespace pybind11::literals; // to bring in the `_a` literal
+f(1234, &quot;say&quot;_a=&quot;hello&quot;, &quot;to&quot;_a=some_instance); // keyword call in C++
+</code></pre>
+<h4 id="1218-拆包参数"><a class="header" href="#1218-拆包参数">12.1.8 拆包参数</a></h4>
+<p>拆包参数<code>*args</code>和<code>**kwargs</code>可以与其他参数混合使用：</p>
+<pre><code class="language-c++">// * unpacking
+py::tuple args = py::make_tuple(1234, &quot;hello&quot;, some_instance);
+f(*args);
+
+// ** unpacking
+py::dict kwargs = py::dict(&quot;number&quot;_a=1234, &quot;say&quot;_a=&quot;hello&quot;, &quot;to&quot;_a=some_instance);
+f(**kwargs);
+
+// mixed keywords, * and ** unpacking
+py::tuple args = py::make_tuple(1234);
+py::dict kwargs = py::dict(&quot;to&quot;_a=some_instance);
+f(*args, &quot;say&quot;_a=&quot;hello&quot;, **kwargs);
+</code></pre>
+<p>Generalized unpacking according to <a href="https://www.python.org/dev/peps/pep-0448/">PEP448</a> is also supported:</p>
+<pre><code>py::dict kwargs1 = py::dict(&quot;number&quot;_a=1234);
+py::dict kwargs2 = py::dict(&quot;to&quot;_a=some_instance);
+f(**kwargs1, &quot;say&quot;_a=&quot;hello&quot;, **kwargs2);
+</code></pre>
+<h4 id="1219-隐式转换"><a class="header" href="#1219-隐式转换">12.1.9 隐式转换</a></h4>
+<p>当使用涉及Python类型的C++接口，或调用Python函数，返回<code>object</code>类型的对象时，会涉及到子类（如dict）的隐式转换。通过<code>operator[]</code>或<code>obj.attr()</code>返回代理对象也是如此。转型到子类可以提供代码的可读性，并允许向需要特定子类类型而不是通用<code>object</code>类型的C++函数传值。</p>
+<pre><code class="language-c++">#include &lt;pybind11/numpy.h&gt;
+using namespace pybind11::literals;
+
+py::module_ os = py::module_::import(&quot;os&quot;);
+py::module_ path = py::module_::import(&quot;os.path&quot;);  // like 'import os.path as path'
+py::module_ np = py::module_::import(&quot;numpy&quot;);  // like 'import numpy as np'
+
+py::str curdir_abs = path.attr(&quot;abspath&quot;)(path.attr(&quot;curdir&quot;));
+py::print(py::str(&quot;Current directory: &quot;) + curdir_abs);
+py::dict environ = os.attr(&quot;environ&quot;);
+py::print(environ[&quot;HOME&quot;]);
+py::array_t&lt;float&gt; arr = np.attr(&quot;ones&quot;)(3, &quot;dtype&quot;_a=&quot;float32&quot;);
+py::print(py::repr(arr + py::int_(1)));
+</code></pre>
+<p>对<code>object</code>子类的隐式转型，不需要向自定义类那样显式调用<code>obj.cast()</code>。</p>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>If a trivial conversion via move constructor is not possible, both implicit and explicit casting (calling <code>obj.cast()</code>) will attempt a “rich” conversion. For instance, <code>py::list env = os.attr(&quot;environ&quot;);</code> will succeed and is equivalent to the Python code <code>env = list(os.environ)</code> that produces a list of the dict keys.</p>
+</blockquote>
+<h4 id="12110-处理异常"><a class="header" href="#12110-处理异常">12.1.10 处理异常</a></h4>
+<p>Python异常将会包装为<code>py::error_already_set</code>后抛出。详见前面的章节“在C++中处理Python异常”。</p>
+<h4 id="12111-gotchas"><a class="header" href="#12111-gotchas">12.1.11 Gotchas</a></h4>
+<p><strong>Default-Constructed Wrappers</strong></p>
+<p>通过包装类型的默认构造函数，不能得到有效的Python对象（不是<code>py::none</code>），和<code>PyObject*</code>空指针一样。可以通过<code>static_cast&lt;bool&gt;(my_wrapper)</code>来检查。</p>
+<p><strong>Assigning py::none() to wrappers</strong></p>
+<p>你可能想在C++函数中使用类似<code>py::str</code>和<code>py::dict</code>类型的参数，并给它们<code>py::none</code>默认值。但是，最好的情况是它会因为<code>None</code>无法转型为该类型而失败；最坏的情况是它会默默工作但会破坏你想要的类型（如Python中<code>py::str(py::none)</code>会返回None）。</p>
+<h3 id="122-numpy"><a class="header" href="#122-numpy">12.2 NumPy</a></h3>
+<h4 id="1221-缓冲协议buffer-protocol"><a class="header" href="#1221-缓冲协议buffer-protocol">12.2.1 缓冲协议（buffer protocol）</a></h4>
+<p>Python支持插件库间以一种极其通用且便利方式进行数据交换。类型可以公开缓冲区视图，以提供对内部原始数据进行快速直接访问。假设我们想绑定下面的简单的Matrix类：</p>
+<pre><code class="language-c++">class Matrix {
+public:
+    Matrix(size_t rows, size_t cols) : m_rows(rows), m_cols(cols) {
+        m_data = new float[rows*cols];
+    }
+    float *data() { return m_data; }
+    size_t rows() const { return m_rows; }
+    size_t cols() const { return m_cols; }
+private:
+    size_t m_rows, m_cols;
+    float *m_data;
+};
+</code></pre>
+<p>下面的绑定代码将Matrix作为一个buffer对象公开，使得Matrices可以转型为NumPy arrays。甚至可以完全避免拷贝操作，类似python语句<code>np.array(matrix_instance, copy = False)</code>。</p>
+<pre><code class="language-c++">py::class_&lt;Matrix&gt;(m, &quot;Matrix&quot;, py::buffer_protocol())
+   .def_buffer([](Matrix &amp;m) -&gt; py::buffer_info {
+        return py::buffer_info(
+            m.data(),                               /* Pointer to buffer */
+            sizeof(float),                          /* Size of one scalar */
+            py::format_descriptor&lt;float&gt;::format(), /* Python struct-style format descriptor */
+            2,                                      /* Number of dimensions */
+            { m.rows(), m.cols() },                 /* Buffer dimensions */
+            { sizeof(float) * m.cols(),             /* Strides (in bytes) for each index */
+              sizeof(float) }
+        );
+    });
+</code></pre>
+<p>要使新类型支持缓冲协议，需要在<code>py:class_</code>构造函数中指定<code>py::buffer_protocol()</code>的标识，并调用<code>def_buffer()</code>方法定义一个通过给定的matrix实例创建<code>py::buffer_info</code>描述对象。<code>py::buffer_info</code>的内容反映了Python缓冲协议的规范。</p>
+<pre><code class="language-c++">struct buffer_info {
+    void *ptr;
+    py::ssize_t itemsize;
+    std::string format;
+    py::ssize_t ndim;
+    std::vector&lt;py::ssize_t&gt; shape;
+    std::vector&lt;py::ssize_t&gt; strides;
+};
+</code></pre>
+<p>要想创建一个支持Python buffer对象为参数的C++函数，可以简单实用<code>py::buffer</code>作为函数参数之一。buffer对象会存在多种配置，因此通常在需要在函数体中进行安全检查。下面的例子，将展示如果定义一个双精度类型的Eigen矩阵的自定义构造函数，支持从兼容buffer对象来初始化（如NumPy matrix）。</p>
+<pre><code class="language-c++">/* Bind MatrixXd (or some other Eigen type) to Python */
+typedef Eigen::MatrixXd Matrix;
+
+typedef Matrix::Scalar Scalar;
+constexpr bool rowMajor = Matrix::Flags &amp; Eigen::RowMajorBit;
+
+py::class_&lt;Matrix&gt;(m, &quot;Matrix&quot;, py::buffer_protocol())
+    .def(py::init([](py::buffer b) {
+        typedef Eigen::Stride&lt;Eigen::Dynamic, Eigen::Dynamic&gt; Strides;
+
+        /* Request a buffer descriptor from Python */
+        py::buffer_info info = b.request();
+
+        /* Some sanity checks ... */
+        if (info.format != py::format_descriptor&lt;Scalar&gt;::format())
+            throw std::runtime_error(&quot;Incompatible format: expected a double array!&quot;);
+
+        if (info.ndim != 2)
+            throw std::runtime_error(&quot;Incompatible buffer dimension!&quot;);
+
+        auto strides = Strides(
+            info.strides[rowMajor ? 0 : 1] / (py::ssize_t)sizeof(Scalar),
+            info.strides[rowMajor ? 1 : 0] / (py::ssize_t)sizeof(Scalar));
+
+        auto map = Eigen::Map&lt;Matrix, 0, Strides&gt;(
+            static_cast&lt;Scalar *&gt;(info.ptr), info.shape[0], info.shape[1], strides);
+
+        return Matrix(map);
+    }));
+</code></pre>
+<p>作为参考，Eigen数据类型的<code>def_buffer()</code>方法类似于如下结构：</p>
+<pre><code class="language-c++">.def_buffer([](Matrix &amp;m) -&gt; py::buffer_info {
+    return py::buffer_info(
+        m.data(),                                /* Pointer to buffer */
+        sizeof(Scalar),                          /* Size of one scalar */
+        py::format_descriptor&lt;Scalar&gt;::format(), /* Python struct-style format descriptor */
+        2,                                       /* Number of dimensions */
+        { m.rows(), m.cols() },                  /* Buffer dimensions */
+        { sizeof(Scalar) * (rowMajor ? m.cols() : 1),
+          sizeof(Scalar) * (rowMajor ? 1 : m.rows()) }
+                                                 /* Strides (in bytes) for each index */
+    );
+ })
+</code></pre>
+<p>关于绑定Eigen类型更简单的方法(尽管有一些限制)，请参阅Eigen部分。</p>
+<h4 id="1222-arrays"><a class="header" href="#1222-arrays">12.2.2 Arrays</a></h4>
+<p>将上述代码中的<code>py::buffer</code>替换为<code>py::array</code>，我们可以限制函数只接收NumPy array（而不是任意满足缓冲协议的Python类型）。</p>
+<p>在很多场合，我们希望函数只接受特定数据类型的NumPy array，可以使用<code>py::array_t&lt;T&gt;</code>来实现。如下所示，函数需要一个双精度浮点类型的NumPy array。</p>
+<pre><code class="language-c++">void f(py::array_t&lt;double&gt; array);
+</code></pre>
+<p>当上面的函数被其他类型（如int）调用时，绑定代码将试图将输入转型为期望类型的NumPy array。该特性需要包含<code>pybind11/numpy.h</code>头文件。该文件不依赖与NumPy的头文件，因此可以独立于NumPy编译。运行时需要NumPy版本大于1.7.0。</p>
+<p>NumPy array的数据并不保证密集排布；此外，数据条目可以以任意的行列跨度分隔。有时，我们需要函数仅接受C（行优先）或Fortran（列优先）次序的密集排布数组。这就需要指定第二个模板参数为<code>py::array::c_style</code>或<code>py::array::f_style</code>。</p>
+<pre><code class="language-c++">void f(py::array_t&lt;double, py::array::c_style | py::array::forcecast&gt; array);
+</code></pre>
+<p><code>py::array::forcecast</code>参数为第二个模板参数的默认值。它确保将不支持的参数转型为满足指定需要的数组，而不是试图匹配下一个函数重载。</p>
+<p>arrays有一些基于NumPy API的方法：</p>
+<ul>
+<li><code>.dtype()</code>返回数组元素的类型。</li>
+<li><code>.strides()</code>返回数组strides的指针。</li>
+<li><code>.squeeze()</code>从给定数组的形状中删除一维的条目。</li>
+<li><code>.view(dtype)</code>返回指定dtype类型的数组视图。</li>
+<li><code>.reshape({i, j, ...})</code>返回指定shape的数组视图。<code>.resize({})</code>也可以。</li>
+<li><code>.index_at(i, j, ...)</code>获取数组指定所以的元素。</li>
+</ul>
+<p>还有几种获取引用的方法(如下所述)。</p>
+<h4 id="1223-结构体类型"><a class="header" href="#1223-结构体类型">12.2.3 结构体类型</a></h4>
+<p>为了让<code>py::array_t</code>可以使用结构体类型，首先我们需要注册这个类型的内存布局。这可以通过<code>PYBIND11_NUMPY_DTYPE</code>宏来实现。</p>
+<pre><code class="language-c++">struct A {
+    int x;
+    double y;
+};
+
+struct B {
+    int z;
+    A a;
+};
+
+// ...
+PYBIND11_MODULE(test, m) {
+    // ...
+
+    PYBIND11_NUMPY_DTYPE(A, x, y);
+    PYBIND11_NUMPY_DTYPE(B, z, a);
+    /* now both A and B can be used as template arguments to py::array_t */
+}
+</code></pre>
+<p>结构体需要是由基础算术类型、<code>std::complex</code>，之前已经注册的子结构体类型，<code>arrays</code>这些类型组成。支持C++数组和<code>std::array</code>。虽然有静态断言来防止不支持结构体类型的注册，使用者仍需负责地只使用plain结构体，这样可以安全的操作原始内存，而不会范围不变量。</p>
+<h4 id="1224-向量化函数"><a class="header" href="#1224-向量化函数">12.2.4 向量化函数</a></h4>
+<p>假设我们想要将一个如下签名的函数绑定到Python，想让他既能接收常规参数，又能接收任意NumPy数组参数（向量、矩阵、多维数组）。</p>
+<pre><code class="language-c++">double my_func(int x, float y, double z);
+</code></pre>
+<p>包含<code>pybind11/numpy.h</code>后，这很好实现：</p>
+<pre><code class="language-c++">m.def(&quot;vectorized_func&quot;, py::vectorize(my_func));
+</code></pre>
+<p>这样将对数组中每个元素调用函数进行处理。与<code>numpy.vectorize()</code>一类方案相比，该方案显著的优势是：元素处理的循环完全在c++端运行，编译器可以将其压缩成一个紧凑的、优化后的循环。函数函数值将返回NumPy 数组类型<code>numpy.dtype.float64</code>。</p>
+<pre><code class="language-python">x = np.array([[1, 3], [5, 7]])
+y = np.array([[2, 4], [6, 8]])
+z = 3
+result = vectorized_func(x, y, z)
+</code></pre>
+<p>标量<code>z</code>将透明地复制4次。输入数组<code>x</code>和<code>y</code>将自动转型为正确的类型（从<code>numpy.dtype.int64</code>转到需要的<code>numpy.dtype.int32</code>和<code>numpy.dtype.float32</code>）。</p>
+<blockquote>
+<p><strong>Note</strong></p>
+<p>只有传值或常量引用的算术类型、复数、POD类型才能向量化，其他参数将原样传递。带右值引用参数的函数不能向量化。</p>
+</blockquote>
+<p>如果计算太过复杂而无法对其进行量化，就需要手动创建和访问缓冲区内容。下面的代码展示了这该如何进行。(the code is somewhat contrived, since it could have been done more simply using <code>vectorize</code>).</p>
+<pre><code class="language-c++">#include &lt;pybind11/pybind11.h&gt;
+#include &lt;pybind11/numpy.h&gt;
+
+namespace py = pybind11;
+
+py::array_t&lt;double&gt; add_arrays(py::array_t&lt;double&gt; input1, py::array_t&lt;double&gt; input2) {
+    py::buffer_info buf1 = input1.request(), buf2 = input2.request();
+
+    if (buf1.ndim != 1 || buf2.ndim != 1)
+        throw std::runtime_error(&quot;Number of dimensions must be one&quot;);
+
+    if (buf1.size != buf2.size)
+        throw std::runtime_error(&quot;Input shapes must match&quot;);
+
+    /* No pointer is passed, so NumPy will allocate the buffer */
+    auto result = py::array_t&lt;double&gt;(buf1.size);
+
+    py::buffer_info buf3 = result.request();
+
+    double *ptr1 = static_cast&lt;double *&gt;(buf1.ptr);
+    double *ptr2 = static_cast&lt;double *&gt;(buf2.ptr);
+    double *ptr3 = static_cast&lt;double *&gt;(buf3.ptr);
+
+    for (size_t idx = 0; idx &lt; buf1.shape[0]; idx++)
+        ptr3[idx] = ptr1[idx] + ptr2[idx];
+
+    return result;
+}
+
+PYBIND11_MODULE(test, m) {
+    m.def(&quot;add_arrays&quot;, &amp;add_arrays, &quot;Add two NumPy arrays&quot;);
+}
+</code></pre>
+<h4 id="1225-直接访问"><a class="header" href="#1225-直接访问">12.2.5 直接访问</a></h4>
+<p>出于性能方面的考虑，尤其是处理大型数组时，我们通常希望直接访问数组元素（已确定索引有效），而不需要在每次访问时进行内部维数和边界检查。为了规避这些检查，<code>array</code>和<code>array_t&lt;T&gt;</code>模板类提供了不带检查的代理类<code>unchecked&lt;N&gt;</code>和<code>mutable_unchecked&lt;N&gt;</code>，其中<code>N</code>为数组所需的维数。</p>
+<pre><code class="language-c++">m.def(&quot;sum_3d&quot;, [](py::array_t&lt;double&gt; x) {
+    auto r = x.unchecked&lt;3&gt;(); // x must have ndim = 3; can be non-writeable
+    double sum = 0;
+    for (py::ssize_t i = 0; i &lt; r.shape(0); i++)
+        for (py::ssize_t j = 0; j &lt; r.shape(1); j++)
+            for (py::ssize_t k = 0; k &lt; r.shape(2); k++)
+                sum += r(i, j, k);
+    return sum;
+});
+m.def(&quot;increment_3d&quot;, [](py::array_t&lt;double&gt; x) {
+    auto r = x.mutable_unchecked&lt;3&gt;(); // Will throw if ndim != 3 or flags.writeable is false
+    for (py::ssize_t i = 0; i &lt; r.shape(0); i++)
+        for (py::ssize_t j = 0; j &lt; r.shape(1); j++)
+            for (py::ssize_t k = 0; k &lt; r.shape(2); k++)
+                r(i, j, k) += 1.0;
+}, py::arg().noconvert());
+</code></pre>
+<p>要从<code>array</code>对象获取代理，你必须同时制定数据类型和维数作为模板参数，如<code>auto r = myarray.mutable_unchecked&lt;float, 2&gt;()</code>。</p>
+<p>如果在编译时不知道维度的数量，则可以省略维度模板参数（像这样<code>arr_t.unchecked()</code>、<code>arr.unchecked&lt;T&gt;()</code>）。这同样可以工作，只是会导致代码优化较少而有略微新能损失。</p>
+<p>注意，返回的代理类时直接引用array的数据，只在构造时读取shape, strides, writeable flag。您必须确保所引用的数组在返回对象的持续时间内不会被销毁或reshape, typically by limiting the scope of the returned instance.</p>
+<p>The returned proxy object supports some of the same methods as <code>py::array</code> so that it can be used as a drop-in replacement for some existing, index-checked uses of <code>py::array</code>:</p>
+<ul>
+<li><code>.ndim()</code> returns the number of dimensions</li>
+<li><code>.data(1, 2, ...)</code> and <code>r.mutable_data(1, 2, ...)</code> returns a pointer to the <code>const T</code> or <code>T</code> data, respectively, at the given indices. The latter is only available to proxies obtained via <code>a.mutable_unchecked()</code>.</li>
+<li><code>.itemsize()</code> returns the size of an item in bytes, i.e. <code>sizeof(T)</code>.</li>
+<li><code>.ndim()</code> returns the number of dimensions.</li>
+<li><code>.shape(n)</code> returns the size of dimension <code>n</code></li>
+<li><code>.size()</code> returns the total number of elements (i.e. the product of the shapes).</li>
+<li><code>.nbytes()</code> returns the number of bytes used by the referenced elements (i.e. <code>itemsize()</code> times <code>size()</code>).</li>
+</ul>
+<h4 id="1226-省略号"><a class="header" href="#1226-省略号">12.2.6 省略号</a></h4>
+<p>Python 3 provides a convenient <code>...</code> ellipsis notation that is often used to slice multidimensional arrays. For instance, the following snippet extracts the middle dimensions of a tensor with the first and last index set to zero. In Python 2, the syntactic sugar <code>...</code> is not available, but the singleton <code>Ellipsis</code> (of type <code>ellipsis</code>) can still be used directly.</p>
+<pre><code class="language-python">a = ...  # a NumPy array
+b = a[0, ..., 0]
+</code></pre>
+<p>The function <code>py::ellipsis()</code> function can be used to perform the same operation on the C++ side:</p>
+<pre><code class="language-c++">py::array a = /* A NumPy array */;
+py::array b = a[py::make_tuple(0, py::ellipsis(), 0)];
+</code></pre>
+<h4 id="1227-内存视图"><a class="header" href="#1227-内存视图">12.2.7 内存视图</a></h4>
+<p>当我们只想提供C/C++ buffer的访问接口而不用构造类对象时，我们可以返回一个<code>memoryview</code>对象。假设我们希望公开<code>2*4 uint8_t</code>数组的<code>memoryview</code>时，可以这样做：</p>
+<pre><code class="language-c++">const uint8_t buffer[] = {
+    0, 1, 2, 3,
+    4, 5, 6, 7
+};
+m.def(&quot;get_memoryview2d&quot;, []() {
+    return py::memoryview::from_buffer(
+        buffer,                                    // buffer pointer
+        { 2, 4 },                                  // shape (rows, cols)
+        { sizeof(uint8_t) * 4, sizeof(uint8_t) }   // strides in bytes
+    );
+})
+</code></pre>
+<p>这样提供的<code>memoryview</code>不归Python管理，使用者有责任管理buffer的生命周期。在C++测删除buffer后继续使用创建的<code>memoryview</code>对象将导致未定义行为。</p>
+<p>我们也可以使用<code>memoryview::from_memory</code>创建一个一维连续数组的内存视图：</p>
+<pre><code class="language-c++">m.def(&quot;get_memoryview1d&quot;, []() {
+    return py::memoryview::from_memory(
+        buffer,               // buffer pointer
+        sizeof(uint8_t) * 8   // buffer size
+    );
+})
+</code></pre>
+<blockquote>
+<p>Note: <code>memoryview::from_memory</code> is not available in Python 2.</p>
+</blockquote>
+<h3 id="123-实用工具"><a class="header" href="#123-实用工具">12.3 实用工具</a></h3>
+<h4 id="1231-在c中使用python-print函数"><a class="header" href="#1231-在c中使用python-print函数">12.3.1 在C++中使用Python print函数</a></h4>
+<p>C++中通常使用<code>std::out</code>输出，而Python中则通常使用<code>print</code>。因为这些方法使用不同的缓冲区，混合使用它们可能会导致输出顺序问题。为解决这个问题，pybind11提供了<code>py::print</code>函数将输出写到Python的<code>sys.stdout</code>中。</p>
+<p>函数包含了Python <code>print</code>一样的<code>sep</code>, <code>end</code>, <code>file</code>, <code>flush</code>等参数。</p>
+<pre><code class="language-c++">py::print(1, 2.0, &quot;three&quot;); // 1 2.0 three
+py::print(1, 2.0, &quot;three&quot;, &quot;sep&quot;_a=&quot;-&quot;); // 1-2.0-three
+
+auto args = py::make_tuple(&quot;unpacked&quot;, true);
+py::print(&quot;-&gt;&quot;, *args, &quot;end&quot;_a=&quot;&lt;-&quot;); // -&gt; unpacked True &lt;-
+</code></pre>
+<h4 id="1232-从ostream捕获标准输出"><a class="header" href="#1232-从ostream捕获标准输出">12.3.2 从ostream捕获标准输出</a></h4>
+<p>C++库通常使用<code>std::cout</code>和<code>std::cerr</code>来打印输出，但它们和Python的标准<code>sys.stdout</code>和<code>sys.stderr</code>不能很好的协同工作。使用<code>py::print</code>代替库的打印是不现实的。我们可以将库函数的输出重定向到相应的Python streams来处理该问题：</p>
+<pre><code class="language-C++">#include &lt;pybind11/iostream.h&gt;
+
+...
+
+// Add a scoped redirect for your noisy code
+m.def(&quot;noisy_func&quot;, []() {
+    py::scoped_ostream_redirect stream(
+        std::cout,                               // std::ostream&amp;
+        py::module_::import(&quot;sys&quot;).attr(&quot;stdout&quot;) // Python output
+    );
+    call_noisy_func();
+});
+</code></pre>
+<blockquote>
+<p><strong>Warning</strong></p>
+<p><code>pybind11/iostream.h</code>的实现不是线程安全的。多线程并发写入重定向的ostream将导致数据竞争和潜在的缓冲区溢出。因此，目前要求所有(可能的)并发重定向写入ostream都要有互斥锁保护。</p>
+</blockquote>
+<p>此方法会对输出流进行刷新，并在<code>scoped_ostream_redirect</code>被销毁时根据需要进行刷新。这允许实时地重定向输出，比如输出到Jupyter notebook。C++流和Python输出这两个参数是可选的，不指定时默认为标准输出。<code>py::scoped_estream_redirect &lt;scoped_estream_redirect&gt;</code>是作用于标准错误的。可以通过<code>py::call_guard</code>来简便设置。</p>
+<pre><code class="language-c++">// Alternative: Call single function using call guard
+m.def(&quot;noisy_func&quot;, &amp;call_noisy_function,
+      py::call_guard&lt;py::scoped_ostream_redirect,
+                     py::scoped_estream_redirect&gt;());
+</code></pre>
+<p>The redirection can also be done in Python with the addition of a context manager, using the <code>py::add_ostream_redirect() &lt;add_ostream_redirect&gt;</code> function:</p>
+<pre><code class="language-c++">py::add_ostream_redirect(m, &quot;ostream_redirect&quot;);
+</code></pre>
+<p>The name in Python defaults to <code>ostream_redirect</code> if no name is passed. This creates the following context manager in Python:</p>
+<pre><code class="language-python">with ostream_redirect(stdout=True, stderr=True):
+    noisy_function()
+</code></pre>
+<p>It defaults to redirecting both streams, though you can use the keyword arguments to disable one of the streams if needed.</p>
+<h4 id="1233-从字符串和文件执行python表达式"><a class="header" href="#1233-从字符串和文件执行python表达式">12.3.3 从字符串和文件执行Python表达式</a></h4>
+<p>pybind11 provides the <code>eval</code>, <code>exec</code> and <code>eval_file</code> functions to evaluate Python expressions and statements. The following example illustrates how they can be used.</p>
+<pre><code class="language-c++">// At beginning of file
+#include &lt;pybind11/eval.h&gt;
+
+...
+
+// Evaluate in scope of main module
+py::object scope = py::module_::import(&quot;__main__&quot;).attr(&quot;__dict__&quot;);
+
+// Evaluate an isolated expression
+int result = py::eval(&quot;my_variable + 10&quot;, scope).cast&lt;int&gt;();
+
+// Evaluate a sequence of statements
+py::exec(
+    &quot;print('Hello')\n&quot;
+    &quot;print('world!');&quot;,
+    scope);
+
+// Evaluate the statements in an separate Python file on disk
+py::eval_file(&quot;script.py&quot;, scope);
+</code></pre>
+<p>C++11 raw string literals are also supported and quite handy for this purpose. The only requirement is that the first statement must be on a new line following the raw string delimiter <code>R&quot;(</code>, ensuring all lines have common leading indent:</p>
+<pre><code class="language-c++">py::exec(R&quot;(
+    x = get_answer()
+    if x == 42:
+        print('Hello World!')
+    else:
+        print('Bye!')
+    )&quot;, scope
+);
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="11.类型转换.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="13.内嵌解释器.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="11.类型转换.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="13.内嵌解释器.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

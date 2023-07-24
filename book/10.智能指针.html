@@ -1,0 +1,299 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>智能指针 - pybind11 Chinese docs</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="00.介绍.html">简介</a></li><li class="chapter-item expanded "><a href="01.改动日志.html"><strong aria-hidden="true">1.</strong> 改动日志</a></li><li class="chapter-item expanded "><a href="02.更新指南.html"><strong aria-hidden="true">2.</strong> 更新指南</a></li><li class="chapter-item expanded "><a href="03.安装说明.html"><strong aria-hidden="true">3.</strong> 安装说明</a></li><li class="chapter-item expanded "><a href="04.首次尝试.html"><strong aria-hidden="true">4.</strong> 首次尝试</a></li><li class="chapter-item expanded "><a href="05.面对对象编程.html"><strong aria-hidden="true">5.</strong> 面对对象编程</a></li><li class="chapter-item expanded "><a href="06.构建系统.html"><strong aria-hidden="true">6.</strong> 构建系统</a></li><li class="chapter-item expanded "><a href="07.函数.html"><strong aria-hidden="true">7.</strong> 函数</a></li><li class="chapter-item expanded "><a href="08.类.html"><strong aria-hidden="true">8.</strong> 类</a></li><li class="chapter-item expanded "><a href="09.异常.html"><strong aria-hidden="true">9.</strong> 异常</a></li><li class="chapter-item expanded "><a href="10.智能指针.html" class="active"><strong aria-hidden="true">10.</strong> 智能指针</a></li><li class="chapter-item expanded "><a href="11.类型转换.html"><strong aria-hidden="true">11.</strong> 类型转换</a></li><li class="chapter-item expanded "><a href="12.Python的C++接口.html"><strong aria-hidden="true">12.</strong> Python的C++接口</a></li><li class="chapter-item expanded "><a href="13.内嵌解释器.html"><strong aria-hidden="true">13.</strong> 内嵌解释器</a></li><li class="chapter-item expanded "><a href="14.杂项.html"><strong aria-hidden="true">14.</strong> 杂项</a></li><li class="chapter-item expanded "><a href="15.FAQ.html"><strong aria-hidden="true">15.</strong> FAQ</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">pybind11 Chinese docs</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="10-智能指针"><a class="header" href="#10-智能指针">10. 智能指针</a></h2>
+<h3 id="101-stdunique_ptr"><a class="header" href="#101-stdunique_ptr">10.1 <code>std::unique_ptr</code></a></h3>
+<p>给定一个带Python绑定的类<code>Example</code>，我们可以像下面一样返回它的unique pointer智能指针实例：</p>
+<pre><code class="language-c++">std::unique_ptr&lt;Example&gt; create_example() { return std::unique_ptr&lt;Example&gt;(new Example()); }
+
+m.def(&quot;create_example&quot;, &amp;create_example);
+</code></pre>
+<p>没其他需要特殊处理的地方。需要注意的是，虽然允许返回unique_ptr对象，但是将其作为函数入参是非法的。例如，pybind11不能处理下列函数签名。</p>
+<pre><code class="language-c++">void do_something_with_example(std::unique_ptr&lt;Example&gt; ex) { ... }
+</code></pre>
+<p>上面的签名意味着Python需要放弃对象的所有权，并将其传递给该函数，这通常是不可能的（对象可能在别处被引用）。</p>
+<h3 id="102-stdshared_ptr"><a class="header" href="#102-stdshared_ptr">10.2 <code>std::shared_ptr</code></a></h3>
+<p><code>class_</code>可以传递一个表示持有者类型的模板类型，它用于管理对象的引用。在不指定的情况下，默认为<code>std::unique_ptr&lt;Type&gt;</code>类型，这意味着当Python的引用计数为0时，将析构对象。该模板类型可以指定为其他的智能指针或引用计数包装类，像下面我们就使用了<code>std::shared_ptr</code>：</p>
+<pre><code class="language-c++">py::class_&lt;Example, std::shared_ptr&lt;Example&gt; /* &lt;- holder type */&gt; obj(m, &quot;Example&quot;);
+</code></pre>
+<p>注意，每个类仅能与一个持有者类型关联。</p>
+<p>使用持有者类型的一个潜在的障碍就是，你需要始终如一的使用它们。猜猜下面的绑定代码有什么问题？</p>
+<pre><code class="language-c++">class Child { };
+
+class Parent {
+public:
+   Parent() : child(std::make_shared&lt;Child&gt;()) { }
+   Child *get_child() { return child.get(); }  /* Hint: ** DON'T DO THIS ** */
+private:
+    std::shared_ptr&lt;Child&gt; child;
+};
+
+PYBIND11_MODULE(example, m) {
+    py::class_&lt;Child, std::shared_ptr&lt;Child&gt;&gt;(m, &quot;Child&quot;);
+
+    py::class_&lt;Parent, std::shared_ptr&lt;Parent&gt;&gt;(m, &quot;Parent&quot;)
+       .def(py::init&lt;&gt;())
+       .def(&quot;get_child&quot;, &amp;Parent::get_child);
+}
+</code></pre>
+<p>下面的Python代码将导致未定义行为（类似段错误）。</p>
+<pre><code class="language-python">from example import Parent
+print(Parent().get_child())
+</code></pre>
+<p>问题在于<code>Parent::get_child()</code>返回类<code>Child</code>实例的指针，但事实上这个经由<code>std::shared_ptr&lt;...&gt;</code>管理的实例，在传递原始指针时就丢失了。这个例子中，pybind11将创建第二个独立的<code>std::shared_ptr&lt;...&gt;</code>声明指针的所有权。最后，对象将被free两次，因为两个shared指针没法知道彼此的存在。</p>
+<p>有两种方法解决这个问题：</p>
+<ol>
+<li>
+<p>对于智能指针管理的类型，永远不要在函数如参数或返回值中使用原始指针。换句话说，在任何需要使用该类型指针的地方，使用它们指定的持有者类型代替。这个例子中<code>get_child()</code>可以这样修改：</p>
+<pre><code class="language-c++">std::shared_ptr&lt;Child&gt; get_child() { return child; }
+</code></pre>
+</li>
+<li>
+<p>定义<code>Child</code>时指定<code>std::enable_shared_from_this&lt;T&gt;</code>作为基类。这将在<code>Child</code>的基础上增加一点信息，让pybind11认识到这里已经存在一个<code>std::shared_ptr&lt;...&gt;</code>，并与之交互。修改示例如下：</p>
+<pre><code class="language-c++">class Child : public std::enable_shared_from_this&lt;Child&gt; { };
+</code></pre>
+</li>
+</ol>
+<h3 id="103-自定义智能指针"><a class="header" href="#103-自定义智能指针">10.3 自定义智能指针</a></h3>
+<p>pybind11支持开箱即用的 <code>std::unique_ptr</code> 和 <code>std::shared_ptr</code> 。对于其他自定义的智能指针，可以使用下面的宏使能透明转换（transparent conversions）。它必须在其他绑定代码之前在顶层名称空间中声明：</p>
+<pre><code class="language-c++">PYBIND11_DECLARE_HOLDER_TYPE(T, SmartPtr&lt;T&gt;);
+</code></pre>
+<p>宏的第一个参数为占位符名称，用作第二个参数的模板参数。因此，你可以使用任意的标识符（不要使用你的代码中已经存在的类型），只需保持两边一致即可。</p>
+<p>宏也可以接收第三个可选的bool类型参数，默认为false。</p>
+<pre><code class="language-c++">PYBIND11_DECLARE_HOLDER_TYPE(T, SmartPtr&lt;T&gt;, true);
+</code></pre>
+<p>如果<code>SmartPtr&lt;T&gt;</code>总是从<code>T*</code>指针初始化，不存在不一致的风险（如多个独立的<code>SmartPtr&lt;T&gt;</code>认为他们是<code>T*</code>指针的唯一拥有者）。当<code>T</code>实例使用侵入式引用计数时，应设定为<code>true</code>。</p>
+<p>在使用该特性前，请先阅读 <a href="https://pybind11.readthedocs.io/en/stable/advanced/misc.html#macro-notes">General notes regarding convenience macros</a>。</p>
+<p>默认情况下，pybind11假定自定义智能指针具有标准接口，如提供<code>.get()</code>成员函数来获取底层的原始指针。如果没有，则需要指定<code>holder_helper</code>：</p>
+<pre><code class="language-c++">// Always needed for custom holder types
+PYBIND11_DECLARE_HOLDER_TYPE(T, SmartPtr&lt;T&gt;);
+
+// Only needed if the type's `.get()` goes by another name
+namespace pybind11 { namespace detail {
+    template &lt;typename T&gt;
+    struct holder_helper&lt;SmartPtr&lt;T&gt;&gt; { // &lt;-- specialization
+        static const T *get(const SmartPtr&lt;T&gt; &amp;p) { return p.getPointer(); }
+    };
+}}
+</code></pre>
+<p>上述特化告诉pybind11，自定义<code>SmartPtr</code>通过<code>.getPointer()</code>提供<code>.get()</code>接口。</p>
+<blockquote>
+<p>see also: 文件<code>tests/test_smart_ptr.cpp</code>提供了一个展示如何使用自定义引用计数holder类型的详细示例。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="09.异常.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="11.类型转换.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="09.异常.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="11.类型转换.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

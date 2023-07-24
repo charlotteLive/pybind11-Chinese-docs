@@ -3,10 +3,4 @@ authors = ["wuqiang"]
 language = "zh"
 multilingual = false
 src = "src"
-title = "pybind11 Chinese docs"
-
-[output.html]
-mathjax-support = true
-no-section-label = true
-git-repository-url = "https://github.com/charlotteLive/pybind11-Chinese-docs"
-git-repository-icon = "fa-github"
+title = "pybind11中文文档"

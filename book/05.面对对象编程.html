@@ -1,0 +1,536 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>面对对象编程 - pybind11 Chinese docs</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="00.介绍.html">简介</a></li><li class="chapter-item expanded "><a href="01.改动日志.html"><strong aria-hidden="true">1.</strong> 改动日志</a></li><li class="chapter-item expanded "><a href="02.更新指南.html"><strong aria-hidden="true">2.</strong> 更新指南</a></li><li class="chapter-item expanded "><a href="03.安装说明.html"><strong aria-hidden="true">3.</strong> 安装说明</a></li><li class="chapter-item expanded "><a href="04.首次尝试.html"><strong aria-hidden="true">4.</strong> 首次尝试</a></li><li class="chapter-item expanded "><a href="05.面对对象编程.html" class="active"><strong aria-hidden="true">5.</strong> 面对对象编程</a></li><li class="chapter-item expanded "><a href="06.构建系统.html"><strong aria-hidden="true">6.</strong> 构建系统</a></li><li class="chapter-item expanded "><a href="07.函数.html"><strong aria-hidden="true">7.</strong> 函数</a></li><li class="chapter-item expanded "><a href="08.类.html"><strong aria-hidden="true">8.</strong> 类</a></li><li class="chapter-item expanded "><a href="09.异常.html"><strong aria-hidden="true">9.</strong> 异常</a></li><li class="chapter-item expanded "><a href="10.智能指针.html"><strong aria-hidden="true">10.</strong> 智能指针</a></li><li class="chapter-item expanded "><a href="11.类型转换.html"><strong aria-hidden="true">11.</strong> 类型转换</a></li><li class="chapter-item expanded "><a href="12.Python的C++接口.html"><strong aria-hidden="true">12.</strong> Python的C++接口</a></li><li class="chapter-item expanded "><a href="13.内嵌解释器.html"><strong aria-hidden="true">13.</strong> 内嵌解释器</a></li><li class="chapter-item expanded "><a href="14.杂项.html"><strong aria-hidden="true">14.</strong> 杂项</a></li><li class="chapter-item expanded "><a href="15.FAQ.html"><strong aria-hidden="true">15.</strong> FAQ</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">pybind11 Chinese docs</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="5-面对对象编程"><a class="header" href="#5-面对对象编程">5. 面对对象编程</a></h2>
+<h3 id="51-创建一个自定义类的绑定"><a class="header" href="#51-创建一个自定义类的绑定">5.1 创建一个自定义类的绑定</a></h3>
+<p>让我们来看一个更加复杂的例子：绑定一个C++自定义数据结构<code>Pet</code>。定义如下：</p>
+<pre><code class="language-c++">struct Pet {
+    Pet(const std::string &amp;name) : name(name) { }
+    void setName(const std::string &amp;name_) { name = name_; }
+    const std::string &amp;getName() const { return name; }
+
+    std::string name;
+};
+</code></pre>
+<p>绑定代码如下所示：</p>
+<pre><code class="language-c++">#include &lt;pybind11/pybind11.h&gt;
+namespace py = pybind11;
+
+PYBIND11_MODULE(example, m) {
+    py::class_&lt;Pet&gt;(m, &quot;Pet&quot;)
+        .def(py::init&lt;const std::string &amp;&gt;())
+        .def(&quot;setName&quot;, &amp;Pet::setName)
+        .def(&quot;getName&quot;, &amp;Pet::getName);
+}
+</code></pre>
+<p><code>class_</code>会创建C++ class或 struct的绑定。<code>init()</code>方法使用类构造函数的参数类型作为模板参数，并包装相应的构造函数（详见<a href="https://pybind11.readthedocs.io/en/stable/advanced/classes.html#custom-constructors">自定义构造函数</a>）。Python使用示例如下；</p>
+<pre><code class="language-python">&gt;&gt;&gt; import example
+&gt;&gt;&gt; p = example.Pet(&quot;Molly&quot;)
+&gt;&gt;&gt; print(p)
+&lt;example.Pet object at 0x10cd98060&gt;
+&gt;&gt;&gt; p.getName()
+u'Molly'
+&gt;&gt;&gt; p.setName(&quot;Charly&quot;)
+&gt;&gt;&gt; p.getName()
+u'Charly'
+</code></pre>
+<blockquote>
+<p><strong>See also</strong>：静态成员函数需要使用<code>class_::def_static</code>来绑定。</p>
+</blockquote>
+<h3 id="52-关键字参数和默认参数"><a class="header" href="#52-关键字参数和默认参数">5.2 关键字参数和默认参数</a></h3>
+<p>可以使用第4章讨论的语法来指定关键字和默认参数，详见第4章相关章节。</p>
+<h3 id="53-绑定匿名函数"><a class="header" href="#53-绑定匿名函数">5.3 绑定匿名函数</a></h3>
+<p>使用<code>print(p)</code>打印对象信息时，上面的例子会得到一些基本无用的信息。</p>
+<pre><code class="language-python">&gt;&gt;&gt; print(p)
+&lt;example.Pet object at 0x10cd98060&gt;
+</code></pre>
+<p>我们可以绑定一个工具函数到<code>__repr__</code>方法，来返回可读性好的摘要信息。在不改变Pet类的基础上，使用一个匿名函数来完成这个功能是一个不错的选择。</p>
+<pre><code class="language-c++">py::class_&lt;Pet&gt;(m, &quot;Pet&quot;)
+    .def(py::init&lt;const std::string &amp;&gt;())
+    .def(&quot;setName&quot;, &amp;Pet::setName)
+    .def(&quot;getName&quot;, &amp;Pet::getName)
+    .def(&quot;__repr__&quot;,
+        [](const Pet &amp;a) {
+            return &quot;&lt;example.Pet named '&quot; + a.name + &quot;'&gt;&quot;;
+        });
+</code></pre>
+<p>通过上面的修改，Python中的输出如下：</p>
+<pre><code class="language-python">&gt;&gt;&gt; print(p)
+&lt;example.Pet named 'Molly'&gt;
+</code></pre>
+<p>pybind11支持无状态和有状态的lambda闭包，即lambda表达式的<code>[]</code>是否带捕获参数。</p>
+<h3 id="54-成员变量"><a class="header" href="#54-成员变量">5.4 成员变量</a></h3>
+<p>使用<code>class_::def_readwrite</code>方法可以导出公有成员变量，使用<code>class_::def_readonly</code>方法则可以导出只读成员。</p>
+<pre><code class="language-c++">py::class_&lt;Pet&gt;(m, &quot;Pet&quot;)
+    .def(py::init&lt;const std::string &amp;&gt;())
+    .def_readwrite(&quot;name&quot;, &amp;Pet::name)
+    // ... remainder ...
+</code></pre>
+<p>Python中使用示例如下：</p>
+<pre><code class="language-python">&gt;&gt;&gt; p = example.Pet(&quot;Molly&quot;)
+&gt;&gt;&gt; p.name
+u'Molly'
+&gt;&gt;&gt; p.name = &quot;Charly&quot;
+&gt;&gt;&gt; p.name
+u'Charly'
+</code></pre>
+<p>假设<code>Pet::name</code>是一个私有成员变量，向外提供setter和getters方法。</p>
+<pre><code class="language-c++">class Pet {
+public:
+    Pet(const std::string &amp;name) : name(name) { }
+    void setName(const std::string &amp;name_) { name = name_; }
+    const std::string &amp;getName() const { return name; }
+private:
+    std::string name;
+};
+</code></pre>
+<p>可以使用<code>class_::def_property()</code>(只读成员使用<code>class_::def_property_readonly()</code>)来定义并私有成员，并生成相应的setter和geter方法：</p>
+<pre><code class="language-c++">py::class_&lt;Pet&gt;(m, &quot;Pet&quot;)
+    .def(py::init&lt;const std::string &amp;&gt;())
+    .def_property(&quot;name&quot;, &amp;Pet::getName, &amp;Pet::setName)
+    // ... remainder ...
+</code></pre>
+<p>只写属性通过将read函数定义为nullptr来实现。</p>
+<blockquote>
+<p><strong>see also</strong>: 相似的方法<code>class_::def_readwrite_static()</code>, <code>class_::def_readonly_static()</code> <code>class_::def_property_static()</code>, <code>class_::def_property_readonly_static()</code>用于绑定静态变量和属性。</p>
+</blockquote>
+<h3 id="55-动态属性"><a class="header" href="#55-动态属性">5.5 动态属性</a></h3>
+<p>原生的Pyhton类可以动态地获取新属性：</p>
+<pre><code class="language-python">&gt;&gt;&gt; class Pet:
+...    name = &quot;Molly&quot;
+...
+&gt;&gt;&gt; p = Pet()
+&gt;&gt;&gt; p.name = &quot;Charly&quot;  # overwrite existing
+&gt;&gt;&gt; p.age = 2  # dynamically add a new attribute
+</code></pre>
+<p>默认情况下，从C++导出的类不支持动态属性，其可写属性必须是通过<code>class_::def_readwrite</code>或<code>class_::def_property</code>定义的。试图设置其他属性将产生错误：</p>
+<pre><code class="language-python">&gt;&gt;&gt; p = example.Pet()
+&gt;&gt;&gt; p.name = &quot;Charly&quot;  # OK, attribute defined in C++
+&gt;&gt;&gt; p.age = 2  # fail
+AttributeError: 'Pet' object has no attribute 'age'
+</code></pre>
+<p>要让C++类也支持动态属性，我们需要在<code>py::class_</code>的构造函数添加<code>py::dynamic_attr</code>标识：</p>
+<pre><code class="language-c++">py::class_&lt;Pet&gt;(m, &quot;Pet&quot;, py::dynamic_attr())
+    .def(py::init&lt;&gt;())
+    .def_readwrite(&quot;name&quot;, &amp;Pet::name);
+</code></pre>
+<p>这样，之前报错的代码就能够正常运行了。</p>
+<pre><code class="language-python">&gt;&gt;&gt; p = example.Pet()
+&gt;&gt;&gt; p.name = &quot;Charly&quot;  # OK, overwrite value in C++
+&gt;&gt;&gt; p.age = 2  # OK, dynamically add a new attribute
+&gt;&gt;&gt; p.__dict__  # just like a native Python class
+{'age': 2}
+</code></pre>
+<p>需要提醒一下，支持动态属性会带来小小的运行时开销。不仅仅因为增加了额外的<code>__dict__</code>属性，还因为处理循环引用时需要花费更多的垃圾收集跟踪花销。但是不必担心这个问题，因为原生Python类也有同样的开销。默认情况下，pybind11导出的类比原生Python类效率更高，使能动态属性也只是让它们处于同等水平而已。</p>
+<h3 id="56-继承与向下转型"><a class="header" href="#56-继承与向下转型">5.6 继承与向下转型</a></h3>
+<p>现在有两个具有继承关系的类：</p>
+<pre><code class="language-c++">struct Pet {
+    Pet(const std::string &amp;name) : name(name) { }
+    std::string name;
+};
+
+struct Dog : Pet {
+    Dog(const std::string &amp;name) : Pet(name) { }
+    std::string bark() const { return &quot;woof!&quot;; }
+};
+</code></pre>
+<p>pybind11提供了两种方法来指明继承关系：1）将C++基类作为派生类<code>class_</code>的模板参数；2）将基类名作为<code>class_</code>的参数绑定到派生类。两种方法是等效的。</p>
+<pre><code class="language-c++">py::class_&lt;Pet&gt;(m, &quot;Pet&quot;)
+   .def(py::init&lt;const std::string &amp;&gt;())
+   .def_readwrite(&quot;name&quot;, &amp;Pet::name);
+
+// Method 1: template parameter:
+py::class_&lt;Dog, Pet /* &lt;- specify C++ parent type */&gt;(m, &quot;Dog&quot;)
+    .def(py::init&lt;const std::string &amp;&gt;())
+    .def(&quot;bark&quot;, &amp;Dog::bark);
+
+// Method 2: pass parent class_ object:
+py::class_&lt;Dog&gt;(m, &quot;Dog&quot;, pet /* &lt;- specify Python parent type */)
+    .def(py::init&lt;const std::string &amp;&gt;())
+    .def(&quot;bark&quot;, &amp;Dog::bark);
+</code></pre>
+<p>指明继承关系后，派生类实例将获得两者的字段和方法：</p>
+<pre><code class="language-python">&gt;&gt;&gt; p = example.Dog(&quot;Molly&quot;)
+&gt;&gt;&gt; p.name
+u'Molly'
+&gt;&gt;&gt; p.bark()
+u'woof!'
+</code></pre>
+<p>上面的例子是一个常规非多态的继承关系，表现在Python就是：</p>
+<pre><code class="language-c++">// 返回一个指向派生类的基类指针
+m.def(&quot;pet_store&quot;, []() { return std::unique_ptr&lt;Pet&gt;(new Dog(&quot;Molly&quot;)); });
+</code></pre>
+<pre><code class="language-python">&gt;&gt;&gt; p = example.pet_store()
+&gt;&gt;&gt; type(p)  # `Dog` instance behind `Pet` pointer
+Pet          # no pointer downcasting for regular non-polymorphic types
+&gt;&gt;&gt; p.bark()
+AttributeError: 'Pet' object has no attribute 'bark'
+</code></pre>
+<p><code>pet_store</code>函数返回了一个Dog实例，但由于基类并非多态类型，Python只识别到了Pet。在C++中，一个类至少有一个虚函数才会被视为多态类型。pybind11会自动识别这种多态机制。</p>
+<pre><code class="language-c++">struct PolymorphicPet {
+    virtual ~PolymorphicPet() = default;
+};
+
+struct PolymorphicDog : PolymorphicPet {
+    std::string bark() const { return &quot;woof!&quot;; }
+};
+
+// Same binding code
+py::class_&lt;PolymorphicPet&gt;(m, &quot;PolymorphicPet&quot;);
+py::class_&lt;PolymorphicDog, PolymorphicPet&gt;(m, &quot;PolymorphicDog&quot;)
+    .def(py::init&lt;&gt;())
+    .def(&quot;bark&quot;, &amp;PolymorphicDog::bark);
+
+// Again, return a base pointer to a derived instance
+m.def(&quot;pet_store2&quot;, []() { return std::unique_ptr&lt;PolymorphicPet&gt;(new PolymorphicDog); });
+</code></pre>
+<pre><code class="language-python">&gt;&gt;&gt; p = example.pet_store2()
+&gt;&gt;&gt; type(p)
+PolymorphicDog  # automatically downcast
+&gt;&gt;&gt; p.bark()
+u'woof!'
+</code></pre>
+<p>pybind11会自动地将一个指向多态基类的指针，向下转型为实际的派生类类型。这和C++常见的情况不同，我们不仅可以访问基类的虚函数，还能获取到通过基类看不到的，具体的派生类的方法和属性。</p>
+<h3 id="57-重载方法"><a class="header" href="#57-重载方法">5.7 重载方法</a></h3>
+<p>重载方法即拥有相同的函数名，但入参不一样的函数：</p>
+<pre><code class="language-c++">struct Pet {
+    Pet(const std::string &amp;name, int age) : name(name), age(age) { }
+
+    void set(int age_) { age = age_; }
+    void set(const std::string &amp;name_) { name = name_; }
+
+    std::string name;
+    int age;
+};
+</code></pre>
+<p>我们在绑定<code>Pet::set</code>时会报错，因为编译器并不知道用户想选择哪个重载方法。我们需要添加具体的函数指针来消除歧义。绑定多个函数到同一个Python名称，将会自动创建函数重载链。Python将会依次匹配，找到最合适的重载函数。</p>
+<pre><code class="language-c++">py::class_&lt;Pet&gt;(m, &quot;Pet&quot;)
+   .def(py::init&lt;const std::string &amp;, int&gt;())
+   .def(&quot;set&quot;, static_cast&lt;void (Pet::*)(int)&gt;(&amp;Pet::set), &quot;Set the pet's age&quot;)
+   .def(&quot;set&quot;, static_cast&lt;void (Pet::*)(const std::string &amp;)&gt;(&amp;Pet::set), &quot;Set the pet's name&quot;);
+</code></pre>
+<p>在函数的文档描述中，我们可以看见重载的函数签名：</p>
+<pre><code class="language-python">&gt;&gt;&gt; help(example.Pet)
+
+class Pet(__builtin__.object)
+ |  Methods defined here:
+ |
+ |  __init__(...)
+ |      Signature : (Pet, str, int) -&gt; NoneType
+ |
+ |  set(...)
+ |      1. Signature : (Pet, int) -&gt; NoneType
+ |
+ |      Set the pet's age
+ |
+ |      2. Signature : (Pet, str) -&gt; NoneType
+ |
+ |      Set the pet's name
+</code></pre>
+<p>如果你的编译器支持C++14，也可以使用下面的语法来转换重载函数：</p>
+<pre><code class="language-c++">py::class_&lt;Pet&gt;(m, &quot;Pet&quot;)
+    .def(&quot;set&quot;, py::overload_cast&lt;int&gt;(&amp;Pet::set), &quot;Set the pet's age&quot;)
+    .def(&quot;set&quot;, py::overload_cast&lt;const std::string &amp;&gt;(&amp;Pet::set), &quot;Set the pet's name&quot;);
+</code></pre>
+<p>这里，<code>py::overload_cast</code>仅需指定函数类型，不用给出返回值类型，以避免原语法带来的不必要的干扰(<code>void (Pet::*)</code>)。如果是基于const的重载，需要使用<code>py::const</code>标识。</p>
+<pre><code class="language-c++">struct Widget {
+    int foo(int x, float y);
+    int foo(int x, float y) const;
+};
+
+py::class_&lt;Widget&gt;(m, &quot;Widget&quot;)
+   .def(&quot;foo_mutable&quot;, py::overload_cast&lt;int, float&gt;(&amp;Widget::foo))
+   .def(&quot;foo_const&quot;,   py::overload_cast&lt;int, float&gt;(&amp;Widget::foo, py::const_));
+</code></pre>
+<p>如果你想在仅支持c++11的编译器上使用<code>py::overload_cast</code>语法，可以使用<code>py::detail::overload_cast_impl</code>来代替：</p>
+<pre><code class="language-c++">template &lt;typename... Args&gt;
+using overload_cast_ = pybind11::detail::overload_cast_impl&lt;Args...&gt;;
+
+py::class_&lt;Pet&gt;(m, &quot;Pet&quot;)
+    .def(&quot;set&quot;, overload_cast_&lt;int&gt;()(&amp;Pet::set), &quot;Set the pet's age&quot;)
+    .def(&quot;set&quot;, overload_cast_&lt;const std::string &amp;&gt;()(&amp;Pet::set), &quot;Set the pet's name&quot;);
+</code></pre>
+<blockquote>
+<p>Note: 如果想定义多个重载的构造函数，使用<code>.def(py::init&lt;...&gt;())</code>语法依次定义就好，指定关键字和默认参数的机制也还是生效的。</p>
+</blockquote>
+<h3 id="58-枚举和内部类型"><a class="header" href="#58-枚举和内部类型">5.8 枚举和内部类型</a></h3>
+<p>现在有一个含有枚举和内部类型的类：</p>
+<pre><code class="language-c++">struct Pet {
+    enum Kind {
+        Dog = 0,
+        Cat
+    };
+
+    struct Attributes {
+        float age = 0;
+    };
+
+    Pet(const std::string &amp;name, Kind type) : name(name), type(type) { }
+
+    std::string name;
+    Kind type;
+    Attributes attr;
+};
+</code></pre>
+<p>绑定代码如下所示：</p>
+<pre><code class="language-c++">py::class_&lt;Pet&gt; pet(m, &quot;Pet&quot;);
+
+pet.def(py::init&lt;const std::string &amp;, Pet::Kind&gt;())
+    .def_readwrite(&quot;name&quot;, &amp;Pet::name)
+    .def_readwrite(&quot;type&quot;, &amp;Pet::type)
+    .def_readwrite(&quot;attr&quot;, &amp;Pet::attr);
+
+py::enum_&lt;Pet::Kind&gt;(pet, &quot;Kind&quot;)
+    .value(&quot;Dog&quot;, Pet::Kind::Dog)
+    .value(&quot;Cat&quot;, Pet::Kind::Cat)
+    .export_values();
+
+py::class_&lt;Pet::Attributes&gt; attributes(pet, &quot;Attributes&quot;)
+    .def(py::init&lt;&gt;())
+    .def_readwrite(&quot;age&quot;, &amp;Pet::Attributes::age);
+</code></pre>
+<p>为确保嵌套类型<code>Kind</code>和<code>Attributes</code>在<code>Pet</code>的作用域中创建，我们必须向<code>enum_</code>和<code>class_</code>的构造函数提供<code>Pet</code> <code>class_</code>实例。<code>enum_::export_values()</code>用来导出枚举项到父作用域，C++11的强枚举类型需要跳过这点。</p>
+<pre><code class="language-python">&gt;&gt;&gt; p = Pet(&quot;Lucy&quot;, Pet.Cat)
+&gt;&gt;&gt; p.type
+Kind.Cat
+&gt;&gt;&gt; int(p.type)
+1L
+</code></pre>
+<p>枚举类型的枚举项会被导出到类<code>__members__</code>属性中：</p>
+<pre><code class="language-python">&gt;&gt;&gt; Pet.Kind.__members__
+{'Dog': Kind.Dog, 'Cat': Kind.Cat}
+</code></pre>
+<p><code>name</code>属性可以返回枚举值的名称的unicode字符串，<code>str(enum)</code>也可以做到，但两者的实现目标不同。下面的例子展示了两者的差异：</p>
+<pre><code class="language-python">&gt;&gt;&gt; p = Pet(&quot;Lucy&quot;, Pet.Cat)
+&gt;&gt;&gt; pet_type = p.type
+&gt;&gt;&gt; pet_type
+Pet.Cat
+&gt;&gt;&gt; str(pet_type)
+'Pet.Cat'
+&gt;&gt;&gt; pet_type.name
+'Cat'
+</code></pre>
+<blockquote>
+<p>Note: 当我们给<code>enum_</code>的构造函数增加<code>py::arithmetic()</code>标识时，pybind11将创建一个支持基本算术运算和位运算（如比较、或、异或、取反等）的枚举类型。</p>
+<pre><code class="language-c++">py::enum_&lt;Pet::Kind&gt;(pet, &quot;Kind&quot;, py::arithmetic())
+   ...
+</code></pre>
+<p>默认情况下，省略这些可以节省内存空间。</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="04.首次尝试.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="06.构建系统.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="04.首次尝试.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="06.构建系统.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>安装说明 - pybind11 Chinese docs</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="00.介绍.html">简介</a></li><li class="chapter-item expanded "><a href="01.改动日志.html"><strong aria-hidden="true">1.</strong> 改动日志</a></li><li class="chapter-item expanded "><a href="02.更新指南.html"><strong aria-hidden="true">2.</strong> 更新指南</a></li><li class="chapter-item expanded "><a href="03.安装说明.html" class="active"><strong aria-hidden="true">3.</strong> 安装说明</a></li><li class="chapter-item expanded "><a href="04.首次尝试.html"><strong aria-hidden="true">4.</strong> 首次尝试</a></li><li class="chapter-item expanded "><a href="05.面对对象编程.html"><strong aria-hidden="true">5.</strong> 面对对象编程</a></li><li class="chapter-item expanded "><a href="06.构建系统.html"><strong aria-hidden="true">6.</strong> 构建系统</a></li><li class="chapter-item expanded "><a href="07.函数.html"><strong aria-hidden="true">7.</strong> 函数</a></li><li class="chapter-item expanded "><a href="08.类.html"><strong aria-hidden="true">8.</strong> 类</a></li><li class="chapter-item expanded "><a href="09.异常.html"><strong aria-hidden="true">9.</strong> 异常</a></li><li class="chapter-item expanded "><a href="10.智能指针.html"><strong aria-hidden="true">10.</strong> 智能指针</a></li><li class="chapter-item expanded "><a href="11.类型转换.html"><strong aria-hidden="true">11.</strong> 类型转换</a></li><li class="chapter-item expanded "><a href="12.Python的C++接口.html"><strong aria-hidden="true">12.</strong> Python的C++接口</a></li><li class="chapter-item expanded "><a href="13.内嵌解释器.html"><strong aria-hidden="true">13.</strong> 内嵌解释器</a></li><li class="chapter-item expanded "><a href="14.杂项.html"><strong aria-hidden="true">14.</strong> 杂项</a></li><li class="chapter-item expanded "><a href="15.FAQ.html"><strong aria-hidden="true">15.</strong> FAQ</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">pybind11 Chinese docs</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="3-安装说明"><a class="header" href="#3-安装说明">3. 安装说明</a></h2>
+<p>我们可以在<a href="https://github.com/pybind/pybind11">pybind/pybind11 on GitHub</a>获取到pybind11的源码。推荐pybind11开发者使用下面介绍的前三种方法之一，来获取pybind11。</p>
+<h3 id="31-以子模块的形式集成"><a class="header" href="#31-以子模块的形式集成">3.1 以子模块的形式集成</a></h3>
+<p>当你的项目使用Git管理时，你可以将pybind11当做一个子模块嵌入到你的项目中。在你的git仓库，使用以下命令即可包含pybind11：</p>
+<pre><code class="language-sh">git submodule add -b stable ../../pybind/pybind11 extern/pybind11
+git submodule update --init
+</code></pre>
+<p>这里假设你将项目的依赖放在了<code>extern</code>目录下，并且使用GitHub。如果你没有使用GitHub，可以使用完整的https或ssh URL来代替上面的相对URL<code>../../pybind/pybind11</code>。一些服务器可能需要<code>.git</code>扩展（GitHub不用）。</p>
+<p>到这一步后，你可以直接include <code>extern/pybind11/include</code>目录即可。或者，你可以使用各种集成工具（见Build System一章)来包含pybind11。</p>
+<h3 id="32-通过pypi来集成"><a class="header" href="#32-通过pypi来集成">3.2 通过PyPI来集成</a></h3>
+<p>你可以使用pip，通过PyPI来下载Pybind11的Python包，里面包含了源码已经CMake文件。像这样：</p>
+<pre><code class="language-sh">pip install pybind11
+</code></pre>
+<p>这样pybind11将以标准的Python包的形式提供。如果你想在root环境下直接使用pybind11，可以这样做：</p>
+<pre><code class="language-sh">pip install &quot;pybind11[global]&quot;
+</code></pre>
+<p>如果你使用系统自带的Python来安装，我们推荐在root环境下安装。这样会在<code>/usr/local/include/pybind11</code> 和 <code>/usr/local/share/cmake/pybind11</code>添加文件，除非你想这样。还是推荐你只在虚拟环境或你的<code>pyproject.toml</code>中使用。</p>
+<h3 id="33-通过conda-forge集成"><a class="header" href="#33-通过conda-forge集成">3.3 通过conda-forge集成</a></h3>
+<p>You can use pybind11 with conda packaging via <a href="https://github.com/conda-forge/pybind11-feedstock">conda-forge</a>:</p>
+<pre><code class="language-sh">conda install -c conda-forge pybind11
+</code></pre>
+<h3 id="34-通过vcpkg集成"><a class="header" href="#34-通过vcpkg集成">3.4 通过vcpkg集成</a></h3>
+<p>你可以通过Microsoft <a href="https://github.com/Microsoft/vcpkg/">vcpkg</a>依赖管理工具来下载和安装pybind11：</p>
+<pre><code>git clone https://github.com/Microsoft/vcpkg.git
+cd vcpkg
+./bootstrap-vcpkg.sh
+./vcpkg integrate install
+vcpkg install pybind11
+</code></pre>
+<h3 id="35-通过brew全局安装"><a class="header" href="#35-通过brew全局安装">3.5 通过brew全局安装</a></h3>
+<p>brew包管理（Homebrew on macOS, or Linuxbrew on Linux）有pybind11包。这样安装：</p>
+<pre><code class="language-sh">brew install pybind11
+</code></pre>
+<h3 id="36-其他方法"><a class="header" href="#36-其他方法">3.6 其他方法</a></h3>
+<p>Other locations you can find pybind11 are <a href="https://repology.org/project/python:pybind11/versions">listed here</a>; these are maintained by various packagers and the community.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="02.更新指南.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="04.首次尝试.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="02.更新指南.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="04.首次尝试.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

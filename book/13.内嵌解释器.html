@@ -1,0 +1,368 @@
+<!DOCTYPE HTML>
+<html lang="zh" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>内嵌解释器 - pybind11 Chinese docs</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = null;
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="00.介绍.html">简介</a></li><li class="chapter-item expanded "><a href="01.改动日志.html"><strong aria-hidden="true">1.</strong> 改动日志</a></li><li class="chapter-item expanded "><a href="02.更新指南.html"><strong aria-hidden="true">2.</strong> 更新指南</a></li><li class="chapter-item expanded "><a href="03.安装说明.html"><strong aria-hidden="true">3.</strong> 安装说明</a></li><li class="chapter-item expanded "><a href="04.首次尝试.html"><strong aria-hidden="true">4.</strong> 首次尝试</a></li><li class="chapter-item expanded "><a href="05.面对对象编程.html"><strong aria-hidden="true">5.</strong> 面对对象编程</a></li><li class="chapter-item expanded "><a href="06.构建系统.html"><strong aria-hidden="true">6.</strong> 构建系统</a></li><li class="chapter-item expanded "><a href="07.函数.html"><strong aria-hidden="true">7.</strong> 函数</a></li><li class="chapter-item expanded "><a href="08.类.html"><strong aria-hidden="true">8.</strong> 类</a></li><li class="chapter-item expanded "><a href="09.异常.html"><strong aria-hidden="true">9.</strong> 异常</a></li><li class="chapter-item expanded "><a href="10.智能指针.html"><strong aria-hidden="true">10.</strong> 智能指针</a></li><li class="chapter-item expanded "><a href="11.类型转换.html"><strong aria-hidden="true">11.</strong> 类型转换</a></li><li class="chapter-item expanded "><a href="12.Python的C++接口.html"><strong aria-hidden="true">12.</strong> Python的C++接口</a></li><li class="chapter-item expanded "><a href="13.内嵌解释器.html" class="active"><strong aria-hidden="true">13.</strong> 内嵌解释器</a></li><li class="chapter-item expanded "><a href="14.杂项.html"><strong aria-hidden="true">14.</strong> 杂项</a></li><li class="chapter-item expanded "><a href="15.FAQ.html"><strong aria-hidden="true">15.</strong> FAQ</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">pybind11 Chinese docs</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h2 id="13-内嵌解释器"><a class="header" href="#13-内嵌解释器">13. 内嵌解释器</a></h2>
+<p>虽然pybind11主要聚焦于使用C++扩展Python，反过来也是可以的，可以内嵌Python解释器到C++程序中。前面章节讲解的pybind11内容仍然适用。本节将介绍嵌入所需的一些额外内容。</p>
+<h3 id="131-准备开始"><a class="header" href="#131-准备开始">13.1 准备开始</a></h3>
+<p>创建一个内嵌解释器的程序，可以在Cmake中添加<code>pybind11::embed</code>来支持。</p>
+<pre><code class="language-cmake">cmake_minimum_required(VERSION 3.4)
+project(example)
+
+find_package(pybind11 REQUIRED)  # or `add_subdirectory(pybind11)`
+
+add_executable(example main.cpp)
+target_link_libraries(example PRIVATE pybind11::embed)
+</code></pre>
+<p><code>main.cpp</code>的基本结构如下：</p>
+<pre><code class="language-c++">#include &lt;pybind11/embed.h&gt; // everything needed for embedding
+namespace py = pybind11;
+
+int main() {
+    py::scoped_interpreter guard{}; // start the interpreter and keep it alive
+
+    py::print(&quot;Hello, World!&quot;); // use the Python API
+}
+</code></pre>
+<p>需要在使用任意Python API前初始化解释器，包括pybind11 Python函数和类。RAII guard类<code>scoped_interpreter</code>可用来管理解释器的生命周期。在guard类销毁时，解释器将会关闭并占用的内存。必须在所有Python函数前调用它。</p>
+<h3 id="132-执行python代码"><a class="header" href="#132-执行python代码">13.2 执行Python代码</a></h3>
+<p>在12.3.3节中，我们介绍了可以使用<code>eval</code>、<code>exec</code>和<code>eval_file</code>函数来执行Python表达式或语句。下面的例子展示了附带解释器来执行Python代码的流程：</p>
+<pre><code class="language-c++">#include &lt;pybind11/embed.h&gt;
+namespace py = pybind11;
+
+int main() {
+    py::scoped_interpreter guard{};
+
+    py::exec(R&quot;(
+        kwargs = dict(name=&quot;World&quot;, number=42)
+        message = &quot;Hello, {name}! The answer is {number}&quot;.format(**kwargs)
+        print(message)
+    )&quot;);
+}
+</code></pre>
+<p>也可以使用pybind11 API来实现相同的功能（参考12章）。</p>
+<pre><code class="language-c++">#include &lt;pybind11/embed.h&gt;
+namespace py = pybind11;
+using namespace py::literals;
+
+int main() {
+    py::scoped_interpreter guard{};
+
+    auto kwargs = py::dict(&quot;name&quot;_a=&quot;World&quot;, &quot;number&quot;_a=42);
+    auto message = &quot;Hello, {name}! The answer is {number}&quot;_s.format(**kwargs);
+    py::print(message);
+}
+</code></pre>
+<p>两种方法也可以混合使用：</p>
+<pre><code class="language-c++">#include &lt;pybind11/embed.h&gt;
+#include &lt;iostream&gt;
+
+namespace py = pybind11;
+using namespace py::literals;
+
+int main() {
+    py::scoped_interpreter guard{};
+
+    auto locals = py::dict(&quot;name&quot;_a=&quot;World&quot;, &quot;number&quot;_a=42);
+    py::exec(R&quot;(
+        message = &quot;Hello, {name}! The answer is {number}&quot;.format(**locals())
+    )&quot;, py::globals(), locals);
+
+    auto message = locals[&quot;message&quot;].cast&lt;std::string&gt;();
+    std::cout &lt;&lt; message;
+}
+</code></pre>
+<h3 id="123-导入模块"><a class="header" href="#123-导入模块">12.3 导入模块</a></h3>
+<p>使用<code>module_::import()</code>可以导入Python模块。</p>
+<pre><code class="language-c++">py::module_ sys = py::module_::import(&quot;sys&quot;);
+py::print(sys.attr(&quot;path&quot;));
+</code></pre>
+<p>为方便起见，内嵌解释器时，会将当前工作路径包含到<code>sys.path</code>中。这样我们可以方便地导入本地Python文件。</p>
+<pre><code class="language-python">&quot;&quot;&quot;calc.py located in the working directory&quot;&quot;&quot;
+
+
+def add(i, j):
+    return i + j
+</code></pre>
+<pre><code class="language-c++">py::module_ calc = py::module_::import(&quot;calc&quot;);
+py::object result = calc.attr(&quot;add&quot;)(1, 2);
+int n = result.cast&lt;int&gt;();
+assert(n == 3);
+</code></pre>
+<p>如果运行时源文件被修改（如被外部进程修改），可以使用<code>module_::reload()</code>重新导入模块。这在下面的场景中十分有用：有个应用程序要导入用户定义数据处理脚本，该脚本需要在用户修改后更新时。注意，这个函数不会递归地重新加载模块。</p>
+<h3 id="124-添加内嵌模块"><a class="header" href="#124-添加内嵌模块">12.4 添加内嵌模块</a></h3>
+<p>使用宏<code>PYBIND11_EMBEDDED_MODULE</code>可以添加内嵌的二进制模块。这个定义需要放在全局作用域中。定义后，他们可以向其他模块一样导入。</p>
+<pre><code class="language-c++">#include &lt;pybind11/embed.h&gt;
+namespace py = pybind11;
+
+PYBIND11_EMBEDDED_MODULE(fast_calc, m) {
+    // `m` is a `py::module_` which is used to bind functions and classes
+    m.def(&quot;add&quot;, [](int i, int j) {
+        return i + j;
+    });
+}
+
+int main() {
+    py::scoped_interpreter guard{};
+
+    auto fast_calc = py::module_::import(&quot;fast_calc&quot;);
+    auto result = fast_calc.attr(&quot;add&quot;)(1, 2).cast&lt;int&gt;();
+    assert(result == 3);
+}
+</code></pre>
+<p>Unlike extension modules where only a single binary module can be created, on the embedded side an unlimited number of modules can be added using multiple <code>PYBIND11_EMBEDDED_MODULE</code> definitions (as long as they have unique names).</p>
+<p>These modules are added to Python’s list of builtins, so they can also be imported in pure Python files loaded by the interpreter. Everything interacts naturally:</p>
+<pre><code class="language-c++">&quot;&quot;&quot;py_module.py located in the working directory&quot;&quot;&quot;
+import cpp_module
+
+a = cpp_module.a
+b = a + 1
+#include &lt;pybind11/embed.h&gt;
+namespace py = pybind11;
+
+PYBIND11_EMBEDDED_MODULE(cpp_module, m) {
+    m.attr(&quot;a&quot;) = 1;
+}
+
+int main() {
+    py::scoped_interpreter guard{};
+
+    auto py_module = py::module_::import(&quot;py_module&quot;);
+
+    auto locals = py::dict(&quot;fmt&quot;_a=&quot;{} + {} = {}&quot;, **py_module.attr(&quot;__dict__&quot;));
+    assert(locals[&quot;a&quot;].cast&lt;int&gt;() == 1);
+    assert(locals[&quot;b&quot;].cast&lt;int&gt;() == 2);
+
+    py::exec(R&quot;(
+        c = a + b
+        message = fmt.format(a, b, c)
+    )&quot;, py::globals(), locals);
+
+    assert(locals[&quot;c&quot;].cast&lt;int&gt;() == 3);
+    assert(locals[&quot;message&quot;].cast&lt;std::string&gt;() == &quot;1 + 2 = 3&quot;);
+}
+</code></pre>
+<h3 id="125-解释器的生命周期"><a class="header" href="#125-解释器的生命周期">12.5 解释器的生命周期</a></h3>
+<p>当 <code>scoped_interpreter</code> 销毁时，程序会自动关闭Python解释器。后面再创建一个新的示例会重启解释器。或者，我们也可以使用 <code>initialize_interpreter</code> / <code>finalize_interpreter</code> 这组函数在任意时刻直接设置解释器状态。</p>
+<p>解释器重启后，pybind11创建的模块可以安全地重新初始化，但第三方扩展模块可能会有些问题。问题在于Python本身不能完全卸载扩展模块，并且会有一些解释器重启的警告。简而言之，由于Python引用循环或用户创建的全局数据，并非所有内存都可能被释放。具体细节可以查看CPython文档。</p>
+<blockquote>
+<p><strong>Warning</strong></p>
+<p>Creating two concurrent <code>scoped_interpreter</code> guards is a fatal error. So is calling <code>initialize_interpreter</code> for a second time after the interpreter has already been initialized.</p>
+<p>Do not use the raw CPython API functions <code>Py_Initialize</code> and <code>Py_Finalize</code> as these do not properly handle the lifetime of pybind11’s internal data.</p>
+</blockquote>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="12.Python的C++接口.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="14.杂项.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="12.Python的C++接口.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="14.杂项.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
